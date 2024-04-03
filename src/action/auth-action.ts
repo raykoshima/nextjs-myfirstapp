@@ -34,21 +34,21 @@ export const login = async (formData : unknown) => {
         }
     }
 
-    const checkuser = await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
         where : {
             email : result.data.email,
         }
     })
-    if(!checkuser) return {
+    if(!user) return {
         error : "ไม่พบผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
     }
-    const pwOk = await compareSync(result.data.password,checkuser.password)
+    const pwOk = await compareSync(result.data.password,user.password)
     if(!pwOk) return {
         error : "ไม่พบผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
     }
-    checkuser.password = "you not need to know"
+    user.password = "you not need to know"
     const expires = new Date(Date.now() + 10 * 1000);
-    const session = await encrypt({ checkuser, expires });
+    const session = await encrypt({ user, expires });
     cookies().set("session", session, { expires, httpOnly: true });
     
     return {
@@ -84,9 +84,14 @@ export const register = async (formData : unknown) => {
         password : hashedPassword,
     }
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
         data : data
     })
+
+    user.password = "you not need to know"
+    const expires = new Date(Date.now() + 10 * 1000);
+    const session = await encrypt({ user, expires });
+    cookies().set("session", session, { expires, httpOnly: true });
     
     // return {
     //     error : `id is ${id} email is ${data.email} and password is ${data.password}`
