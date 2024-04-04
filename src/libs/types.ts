@@ -21,3 +21,12 @@ export const registerform = z.object({
 
 export type RegisterForm = z.infer<typeof registerform>
 
+export const userdata = z.object({
+    id : z.string(),
+    email : z.string(),
+    credits : z.string(),
+    firstname : z.string().optional(),
+    lastname : z.string().optional()
+})
+
+export type UserData = z.infer<typeof userdata>

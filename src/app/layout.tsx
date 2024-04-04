@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Toast } from "@/components/toast";
-import { getSession } from "@/libs/auth";
+import { getSession, getUserdata } from "@/libs/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +17,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getSession();
+  // const userdata = await getSession();
+  const userdata = await getUserdata();
   return (
     <html>
       {/* <body className={inter.className}>{children}</body> */}
       <body>
-      <Navbar session={session}/>
+      <Navbar session={userdata}/>
       {children}
       <Toast />
       </body>

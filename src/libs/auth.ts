@@ -1,6 +1,8 @@
+"use server";
 import { decrypt, encrypt } from "@/action/auth-action";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "./prisma";
 
 
 export async function logout() {
@@ -20,7 +22,7 @@ export async function updateSession(request: NextRequest) {
   
     // Refresh the session so it doesn't expire
     const parsed = await decrypt(session);
-    parsed.expires = new Date(Date.now() + 10 * 1000);
+    parsed.expires = new Date(Date.now() + 86400 * 1000);
     const res = NextResponse.next();
     res.cookies.set({
       name: "session",
@@ -30,3 +32,23 @@ export async function updateSession(request: NextRequest) {
     });
     return res;
   }
+
+export async function getUserdata() {
+  const session = cookies().get("session")?.value;
+  if (!session) return;
+  const parsed = await decrypt(session);
+  const respone = await prisma.user.findFirst({
+    where : {
+      id : parsed.userdata.id
+    }
+  })
+  if(!respone) return
+  const data = {
+    id : respone.id,
+    email : respone.email,
+    credits : respone.credits.toFixed(2),
+    firstname : respone?.firstname,
+    lastname : respone?.lastname
+  }
+  return data
+}

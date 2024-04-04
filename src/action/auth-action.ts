@@ -13,7 +13,7 @@ export async function encrypt(payload: any) {
     return await new SignJWT(payload)
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime("10 sec from now")
+      .setExpirationTime("1 day")
       .sign(key);
 }
 
@@ -46,9 +46,11 @@ export const login = async (formData : unknown) => {
     if(!pwOk) return {
         error : "ไม่พบผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
     }
-    user.password = "you not need to know"
-    const expires = new Date(Date.now() + 10 * 1000);
-    const session = await encrypt({ user, expires });
+    const userdata = {
+        id : user.id
+    }
+    const expires = new Date(Date.now() + 86400 * 1000);
+    const session = await encrypt({ userdata, expires });
     cookies().set("session", session, { expires, httpOnly: true });
     
     return {
@@ -88,9 +90,12 @@ export const register = async (formData : unknown) => {
         data : data
     })
 
-    user.password = "you not need to know"
-    const expires = new Date(Date.now() + 10 * 1000);
-    const session = await encrypt({ user, expires });
+    const userdata = {
+        id : user.id
+    }
+
+    const expires = new Date(Date.now() + 86400 * 1000);
+    const session = await encrypt({ userdata, expires });
     cookies().set("session", session, { expires, httpOnly: true });
     
     // return {
