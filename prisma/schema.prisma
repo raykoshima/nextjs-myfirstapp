@@ -25,6 +25,7 @@ model User {
   UpdateAt DateTime @updatedAt
 
   Inventory Inventory[]
+  TopupHistory TopupHistory[]
 }
 
 model Product {
@@ -47,4 +48,18 @@ model Inventory {
   product    Product @relation(references: [id], fields: [product_id], onDelete: Cascade, onUpdate: Cascade)
   
   boughtDate DateTime @default(now())
+}
+
+model TopupHistory { 
+  id Int @id @default(autoincrement())
+  user_id String
+  user       User    @relation(references: [id], fields: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  amount Decimal @db.Money
+  status TopupStatus @default(PENDING)
+  CreateAt DateTime @default(now())
+}
+
+enum TopupStatus {
+  PENDING
+  PAID
 }
