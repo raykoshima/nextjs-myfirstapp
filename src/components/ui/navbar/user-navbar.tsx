@@ -47,34 +47,28 @@ export function UserNavbar({
             <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1">
                 <Menu.Item>
-                  {({ active }) => (
                     <a
                       href="#"
                       className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
                     >
                       Account settings
                     </a>
-                  )}
                 </Menu.Item>
                 <Menu.Item>
-                  {({ active }) => (
                     <a
-                      href="#"
+                      href="/topup"
                       className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
                     >
-                      Support
+                      เติมเงิน
                     </a>
-                  )}
                 </Menu.Item>
                 <Menu.Item>
-                  {({ active }) => (
                     <a
                       href="#"
                       className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100"
                     >
                       License
                     </a>
-                  )}
                 </Menu.Item>
                 </div>
                 <div className="py-1">
