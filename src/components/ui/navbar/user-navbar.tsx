@@ -15,11 +15,24 @@ export function UserNavbar({
     const [isLoading, startTransition] = useTransition();
     const hdlLogout = async () => {
     startTransition(() => {
-        logout();
         Swal.fire({
-        icon: 'success',
-        title: 'Logout Successful',
-        text: `ไว้เจอกันนะ`,
+        title: 'Warning!',
+        text: 'คุณแน่ใจที่จะออกจากระบบ',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonText: 'ออกจากระบบ'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Logout Successful',
+            text: `ไว้เจอกันนะ`,
+          });
+          logout();
+        }
       });
 		});
   }

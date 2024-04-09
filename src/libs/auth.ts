@@ -16,6 +16,11 @@ export async function getSession() {
     return sessionData
 }
 
+export async function getRawSession() {
+  const session = cookies().get("session")?.value;
+  return session
+}
+
 export async function updateSession(request: NextRequest) {
     const session = request.cookies.get("session")?.value;
     if (!session) return;

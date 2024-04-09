@@ -30,3 +30,9 @@ export const userdata = z.object({
 })
 
 export type UserData = z.infer<typeof userdata>
+
+export const topupform = z.object({
+    amount : z.number({ required_error : "กรุณาใส่จำนวนเงิน", invalid_type_error : "กรุณาระบุเป็นตัวเลข" }).min(1, { message : "กรุณาใส่จำนวนมากกว่า 1"}),
+})
+
+export type TopupForm = z.infer<typeof topupform>
