@@ -1,15 +1,9 @@
 
 import Image from "next/image";
-import { cn } from "./components/cn";
-import ProductsGrid from "./components/products-grid";
 import { getMainproduct } from "@/action/product-action";
 // import { redirect } from "next/navigation";
 
 export default async function Home() {
-  // const { user } = await validateRequest();
-  // if (!user) {
-	// 	redirect("/auth/sign-in");
-	// }
   interface Product {
     id: number;
     name: string;
@@ -23,14 +17,6 @@ export default async function Home() {
   
 
   const product = await getMainproduct()
-  // console.log(product)
-  // if(!product){
-  //   message : {
-  //     data : [
-  //       {}
-  //     ]
-  //   }
-  // }
 
   const ProductList: React.FC = () => {
     return (
@@ -42,9 +28,12 @@ export default async function Home() {
               <h3 className="text-xl font-bold mb-2">{product.name}</h3>
               <p className="text-gray-700 mb-4">{product.description}</p>
               {product.Inventory.length === 0 ? (
-                <a href={`/product/${Number(product.id)+0}_${product.name}+${product.description}`} className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full">View Details</a>
+                <a href={`/product/${Number(product.id)+0}`} className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full">View Details</a>
               ) : (
-                <a className="inline-block px-4 py-2 bg-gray-500 text-white font-bold rounded-full">Owned</a>
+                <>
+                <a href={`/product/${Number(product.id)+0}`} className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full">View Details</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a className="inline-block px-4 py-2 bg-gray-500 text-white font-bold rounded-full cursor-not-allowed">Owned</a>
+                </>
               )}
             </div>
           </div>
@@ -75,39 +64,21 @@ export default async function Home() {
 
       <ProductList />
 
-        {/* {/* <div className="bg-white rounded-lg overflow-hidden shadow-md">
-          <Image src="https://via.placeholder.com/400x250" alt="Property Image" width="400" height="250" className="w-full" />
+        <div className="bg-white rounded-lg overflow-hidden shadow-md pt-[25%]">
           <div className="p-4">
-            <h3 className="text-xl font-bold mb-2">Beautiful Home</h3>
-            <p className="text-gray-700 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <a href="#" className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full">View Details</a>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg overflow-hidden shadow-md">
-          <Image src="https://via.placeholder.com/400x250" alt="Property Image" width="400" height="250" className="w-full" />
-          <div className="p-4">
-            <h3 className="text-xl font-bold mb-2">Cozy Apartment</h3>
-            <p className="text-gray-700 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <a href="#" className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full">View Details</a>
-          </div>
-        </div> */}
-
-        <div className="bg-white rounded-lg overflow-hidden shadow-md p-[50%]">
-         
-          <div className="p-4">
-            <h3 className="text-xl font-bold mb-2">Modern Condo</h3>
-            <p className="text-gray-700 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <a href="#" className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full">View Details</a>
+            <center>
+            <h3 className="text-xl font-bold mb-2">ไปหน้าที่แล้ว</h3>
+            <a className="inline-block px-4 py-2 bg-gray-500 text-white font-bold rounded-full cursor-not-allowed"> {`<-`} </a>
+            </center>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg overflow-hidden shadow-md">
-          
+        <div className="bg-white rounded-lg overflow-hidden shadow-md pt-[25%]">
           <div className="p-4">
-            <h3 className="text-xl font-bold mb-2">Cozy Apartment</h3>
-            <p className="text-gray-700 mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <a href="#" className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full">View Details</a>
+            <center>
+            <h3 className="text-xl font-bold mb-2">ไปหน้าถัดไป</h3>
+            <a href="/product/page/2" className="inline-block px-4 py-2 bg-blue-500 text-white font-bold rounded-full"> {`->`} </a>
+            </center>
           </div>
         </div>
         
@@ -118,11 +89,3 @@ export default async function Home() {
   </>
   );
 }
-
-// export default function ProductPage({className}: {className?: string}) {
-//   return (
-//     <div className={cn("my-auto flex w-full max-w-7xl flex-col items-start gap-2", className)}>
-//       <ProductsGrid />
-//     </div>
-//   );
-// }
