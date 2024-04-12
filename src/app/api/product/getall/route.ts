@@ -7,7 +7,7 @@ export const GET = async (req: Request) => {
         
     })
     if(product.length === 0) return returnRes({message : "no product found"},404)
-
+    await prisma.$disconnect();
     return returnRes(product)
 }
 

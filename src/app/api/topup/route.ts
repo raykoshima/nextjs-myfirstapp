@@ -62,7 +62,9 @@ export const POST = async (request : Request) => {
 		}
 	})
 	if(!updateTopup) return returnRes("failed to update topup history",500)
-
+	
+	await prisma.$disconnect();
+	
 	return returnRes(`update sucessfully new amount for ${userData.email} is ${newamount}`)
 
 

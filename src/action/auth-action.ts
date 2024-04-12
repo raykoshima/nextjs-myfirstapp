@@ -52,7 +52,7 @@ export const login = async (formData : unknown) => {
     const expires = new Date(Date.now() + 86400 * 1000);
     const session = await encrypt({ userdata, expires });
     cookies().set("session", session, { expires, httpOnly: true });
-    
+    await prisma.$disconnect();
     return {
         email : result.data.email
     }
@@ -97,7 +97,7 @@ export const register = async (formData : unknown) => {
     const expires = new Date(Date.now() + 86400 * 1000);
     const session = await encrypt({ userdata, expires });
     cookies().set("session", session, { expires, httpOnly: true });
-    
+    await prisma.$disconnect();
     // return {
     //     error : `id is ${id} email is ${data.email} and password is ${data.password}`
     // }

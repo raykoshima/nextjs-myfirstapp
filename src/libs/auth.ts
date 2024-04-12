@@ -55,5 +55,6 @@ export async function getUserdata() {
     firstname : respone?.firstname,
     lastname : respone?.lastname
   }
+  await prisma.$disconnect();
   return data
 }
