@@ -1,3 +1,4 @@
+"use server";
 import { getRawSession, getUserdata } from "@/libs/auth";
 import { prisma } from "@/libs/prisma";
 import axios from "axios";
@@ -103,6 +104,76 @@ export async function getProductById(id : number) {
     })
     await prisma.$disconnect
     return data
+}
+
+export async function getOwnedProduct() {
+  const userdata = await getUserdata();
+    if (!userdata) {
+      redirect("/auth/sign-in");
+    }
+    const data = await prisma.inventory.findMany({
+      where : {
+        user_id : userdata.id
+      },
+      include : {
+        product : true
+      }
+    })
+    await prisma.$disconnect
+    return data
+}
+
+export async function buyProduct(id:number) {
+  const userdata = await getUserdata();
+    if (!userdata) {
+      redirect("/auth/sign-in");
+    }
+  
+  const checkInventory = await prisma.inventory.findFirst({
+    where : {
+      user_id : userdata.id,
+      product_id : id
+    }
+  })
+  if(checkInventory) return {
+    error : "เป็นเจ้าของ product นี้อยู่แล้ว"
+  }
+  const productPrice = await prisma.product.findFirst({
+    where : {
+      id
+    },
+    select : {
+      price : true
+    }
+  })
+  if(!productPrice) return {
+    error : "ไม่พบ product"
+  }
+  const productPriceNum = {
+    price : productPrice.price.toFixed(2)
+  }
+  const creditsChange = Number(userdata.credits) - Number(productPriceNum.price)
+  if(creditsChange < 0) return {
+    error : "เงินในบัญชีไม่เพียงพอ"
+  }
+  await prisma.inventory.create({
+    data : {
+      user_id : userdata.id,
+      product_id : id
+    }
+  })
+  await prisma.user.update({
+    where : {
+      id : userdata.id
+    },
+    data : {
+      credits : creditsChange
+    }
+
+  })
+  return {
+    message : "สั่งซื้อสำเร็จ"
+  }
 }
 
 function createRes(message: object , status: number = 200) {

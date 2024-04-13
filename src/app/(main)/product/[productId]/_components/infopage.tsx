@@ -1,7 +1,41 @@
 "use client"
 
+import { buyProduct } from "@/action/product-action";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+
 
 export function InfoPage({ data } : any) {
+
+  const hldBuy = () => {
+    Swal.fire({
+      title: 'Warning!',
+      text: 'แน่จะนะที่จะซื้อ',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonText: 'ซื้อเลย'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const buy = await buyProduct(Number(data.id))
+        if(buy.error){
+          return toast.error(buy.error)
+        }else{
+        Swal.fire({
+          icon: 'success',
+          title: 'Buy Successful',
+          text: `${buy.message}`,
+        });
+        setTimeout(function() {
+          location.reload()
+        }, 1000);
+        return 
+        }
+      }
+    });
+  }
     // console.log(data)
     return (
         <>
@@ -38,7 +72,7 @@ export function InfoPage({ data } : any) {
                       </div>
                     </div>
                     {data.Inventory.length === 0 ? (
-                            <button type="button" className="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white">
+                            <button type="button" className="h-14 px-6 py-2 font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white" onClick={hldBuy}>
                             Buy now
                             </button>
                     ) : (
