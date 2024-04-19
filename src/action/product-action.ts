@@ -152,28 +152,62 @@ export async function buyProduct(id:number) {
   const productPriceNum = {
     price : productPrice.price.toFixed(2)
   }
-  const creditsChange = Number(userdata.credits) - Number(productPriceNum.price)
-  if(creditsChange < 0) return {
-    error : "เงินในบัญชีไม่เพียงพอ"
-  }
-  await prisma.inventory.create({
-    data : {
-      user_id : userdata.id,
-      product_id : id
-    }
-  })
-  await prisma.user.update({
-    where : {
-      id : userdata.id
-    },
-    data : {
-      credits : creditsChange
-    }
+  creditsChange(userdata.id,parseFloat(productPriceNum.price),id);
 
-  })
   return {
     message : "สั่งซื้อสำเร็จ"
   }
+
+  // const creditsChange = Number(userdata.credits) - Number(productPriceNum.price)
+  // if(creditsChange < 0) return {
+  //   error : "เงินในบัญชีไม่เพียงพอ"
+  // }
+  // await prisma.inventory.create({
+  //   data : {
+  //     user_id : userdata.id,
+  //     product_id : id
+  //   }
+  // })
+  // await prisma.user.update({
+  //   where : {
+  //     id : userdata.id
+  //   },
+  //   data : {
+  //     credits : creditsChange
+  //   }
+
+  // })
+  // return {
+  //   message : "สั่งซื้อสำเร็จ"
+  // }
+}
+
+function creditsChange (userId : string , productPrice : number , productId : number) {
+  return prisma.$transaction(async(tx) => {
+    const userCredit = await tx.user.update({
+      data : {
+        credits : {
+          decrement : productPrice
+        }
+      },
+      where : {
+        id : userId
+      }
+    })
+    if(parseFloat(String(userCredit.credits)) < 0){
+      return {
+        error : "เงินในบัญชีไม่เพียงพอ"
+      }
+    }
+    await prisma.inventory.create({
+      data : {
+        user_id : userId,
+        product_id : productId
+      }
+    })
+
+  })
+
 }
 
 function createRes(message: object , status: number = 200) {
